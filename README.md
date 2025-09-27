@@ -1,6 +1,8 @@
 # RE-Maya-Animation-Export-Tool
 [English](./README.en.md) | [中文](./README.md)
 
+**在[知乎](https://zhuanlan.zhihu.com/p/685480151)上可以看到其他更多内容**
+
 参考[fmt_RE_MESH-Noesis-Plugin](https://github.com/alphazolam/fmt_RE_MESH-Noesis-Plugin)插件中的maxscript，手搓了一个maya的版本，支持以下特性：
 
 * 在maya里面打开`.mesh` / `.motlist`文件并导入
