@@ -57,7 +57,7 @@
 点击**Manually Paste Noesis List**按钮，将修改后的文本填入对话框，即可完成**AnimationList**条目的修复。
 此时重新选中**AnimationList**中有问题的条目可以看到它会被标记为只有1帧。
 
-这些有问题的动画进入UE5.6会报错。
+⚠️这些有问题的动画进入UE5.6会报错。
 
 <img width="865" height="565" alt="image" src="https://github.com/user-attachments/assets/3762740e-14ac-4374-9953-fa18dccfd5c7" />
 
