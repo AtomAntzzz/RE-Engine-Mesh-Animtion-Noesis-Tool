@@ -28,6 +28,8 @@ The `fmt_RE_MESH-Noesis-Plugin` generates a single `[ALL]` animation sequence co
 
 Click `Load` to export. Once complete, all animations will be imported into the Maya scene.
 
+<img width="600" height="800" alt="image" src="https://github.com/user-attachments/assets/19f60429-88bc-4002-997d-7ef66e92ae8d" />
+
 ## Splitting Animations in Maya
 
 After import, the **Animation List** will be automatically filled using the log output from `fmt_RE_MESH-Noesis-Plugin`.
@@ -40,6 +42,8 @@ In **Export Options**:
 * **Export All Animations**: Export all clips from the list.
 
 To export, select the animation skeleton in the scene, click **Export**, and choose a save path.
+
+<img width="464" height="871" alt="image" src="https://github.com/user-attachments/assets/679f471a-e128-4e3a-b698-c586ed59b9c4" />
 
 ## Important Notes
 
@@ -62,3 +66,5 @@ Manual Fix:
 4. Re-select the corrected entries in the Animation List to confirm they are marked as **1 frame**.
 
 ⚠️ Note: Animations with this issue may cause errors when imported into **Unreal Engine 5.6**.
+
+<img width="865" height="565" alt="image" src="https://github.com/user-attachments/assets/3762740e-14ac-4374-9953-fa18dccfd5c7" />
