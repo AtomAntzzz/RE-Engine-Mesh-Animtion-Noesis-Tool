@@ -16,6 +16,12 @@ Based on the MaxScript from fmt_RE_MESH-Noesis-Plugin, this project provides a M
 
 Once the REEM plugin is open, you can either use **Browse** to locate Noesis or enter its path directly.
 
+### Windows UTF-8 Compatibility
+
+Starting with v0.22, REEM launches Noesis in a hidden CP936 console to keep the embedded Python plugin loader in Noesis 4.474 compatible. Command-line exports should no longer report `Detected file type: Unknown` when Windows' **Beta: Use Unicode UTF-8 for worldwide language support** option is enabled.
+
+This workaround only affects the Noesis child process created by REEM. It does not change Windows' system locale, and the interactive selection windows for related MESH files and MOTLIST `[ALL]` animations remain available.
+
 ## Exporting Animations from `.motlist`
 
 * Click the **Import Mesh/Animation** button in REEM.

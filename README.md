@@ -16,6 +16,12 @@
 
 打开REEM插件，通过**Browse**查找，或者直接填入Noesis所在路径
 
+### Windows UTF-8兼容性
+
+从 v0.22 开始，REEM 会在隐藏的 CP936 控制台中启动 Noesis，以兼容 Noesis 4.474 的嵌入式 Python 插件加载器。即使 Windows 开启了 **Beta 版：使用 Unicode UTF-8 提供全球语言支持**，命令行导出也不应再出现 `Detected file type: Unknown`。
+
+这个处理只影响 REEM 创建的 Noesis 子进程，不会修改 Windows 的系统区域设置；MESH 关联文件和 MOTLIST `[ALL]` 动画的交互式选择窗口保持不变。
+
 ## 从.motlist.中导出动画
 点击REEM插件的**Import Mesh/Animtaion**按钮，找到要解包的`.motlist.XXXXXXXXXX`动画文件
 

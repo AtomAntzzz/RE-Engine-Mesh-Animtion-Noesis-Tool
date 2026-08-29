@@ -1,6 +1,6 @@
 # RE Engine Mesh/Animtion Noesis Tool
-# Version: v0.21
-# Last Release: September 27, 2025
+# Version: v0.22
+# Last Release: August 30, 2026
 # Author: AtomAntzzz
 
 import maya.cmds as cmds
@@ -11,6 +11,57 @@ import subprocess
 import time
 import json
 import random
+
+
+def build_noesis_command(noesis_path, input_file, fbx_path, log_path,
+                          optimize=True, framerate=60, batch=False,
+                          no_prompt=False):
+    """Build a Windows command line for a Noesis command-mode export."""
+    arguments = [
+        noesis_path,
+        "?cmode",
+        input_file,
+        fbx_path,
+    ]
+
+    if not optimize:
+        arguments.append("-fbxnooptimize")
+
+    arguments.extend([
+        "-fbxmeshmerge",
+        "-logfile",
+        log_path,
+        "-fbxframerate",
+        str(framerate),
+    ])
+
+    if batch:
+        arguments.append("-b")
+    if no_prompt:
+        arguments.append("-noprompt")
+
+    return subprocess.list2cmdline(arguments)
+
+
+def launch_noesis_command(command, working_directory):
+    """Launch Noesis with a legacy Windows code page available to Python plugins."""
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = subprocess.SW_HIDE
+
+    # Noesis 4.474 embeds Python 3.2, whose plugin loader can fail with error
+    # -306 when Windows' system code page is UTF-8. A real CP936 console keeps
+    # plugin loading stable. Do not redirect stdout/stderr: pipes detach Noesis
+    # from the console code page it needs during Python initialization.
+    console_command = "chcp 936>nul & " + command
+    return subprocess.Popen(
+        console_command,
+        shell=True,
+        cwd=working_directory,
+        startupinfo=startupinfo,
+        creationflags=subprocess.CREATE_NEW_CONSOLE,
+    )
+
 
 class AnimationExporterUI:
     def __init__(self):
@@ -356,47 +407,24 @@ class AnimationExporterUI:
         fbx_path = os.path.join(file_dir, file_base + ".fbx")
         log_path = os.path.join(file_dir, file_base + "_noesis.txt")
             
-        # 构建Noesis命令
-        cmd_parts = [
-            f'"{self.noesis_path}"',
-            '?cmode',
-            f'"{input_file}"',
-            f'"{fbx_path}"'
-        ]
-                
-        # 添加导入选项
-        #if cmds.checkBox(self.chk_bone_numbers, query=True, value=True):
-        #    cmd_parts.append("-bonenumbers")
-    
-        if not cmds.checkBox(self.chk_fbx_optimize, query=True, value=True):
-            cmd_parts.append("-fbxnooptimize")
-    
-        cmd_parts.append("-fbxmeshmerge")
-        cmd_parts.append("-logfile")
-        cmd_parts.append(f'"{log_path}"')
-        
         # 设定动画导出帧率 TODO:根据不同的游戏设定不同的帧率
         framerate = 60
-        cmd_parts.append("-fbxframerate")
-        cmd_parts.append(f'"{framerate}"')
         cmds.currentUnit(time='ntscf')  # 60fps
-    
-        cmd = " ".join(cmd_parts)
+
+        # 保留fmt_RE_MESH的交互式选择窗口，方便选择关联MESH或[ALL]动画。
+        cmd = build_noesis_command(
+            noesis_path=self.noesis_path,
+            input_file=input_file,
+            fbx_path=fbx_path,
+            log_path=log_path,
+            optimize=cmds.checkBox(self.chk_fbx_optimize, query=True, value=True),
+            framerate=framerate,
+        )
     
         print(f"Noesis Command:\n{cmd}\n")
     
-        # 启动 Noesis
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        startupinfo.wShowWindow = subprocess.SW_HIDE
-        process = subprocess.Popen(
-            cmd, 
-            shell=True, 
-            cwd=os.path.dirname(self.noesis_path),
-            startupinfo=startupinfo,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
+        # 在隐藏的CP936控制台中启动Noesis，兼容Windows UTF-8 Beta设置。
+        process = launch_noesis_command(cmd, os.path.dirname(self.noesis_path))
     
         # 等待选择完成
         process.wait()
